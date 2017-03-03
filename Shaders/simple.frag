@@ -56,18 +56,22 @@ vec2 random()
     return vec2(Random.values[index1], Random.values[index2]);
 }
 
+vec3 transformDirToFitToN(vec3 N, vec3 dir) {
+    vec3 random = dot(abs(N), vec3(0.0, 1.0, 0.0)) < 0.999 ? vec3(0.0, 1.0, 0.0) : vec3(0.0, 0.0, 1.0);
+
+    vec3 t = normalize(cross(random, N));
+    vec3 b = cross(N, t);
+
+    return mat3(t, b, N) * dir;
+}
+
 vec3 importanceSamplingDiffuse(vec2 Xi, vec3 n) {
     float phi = 2 * 3.1415926535 * Xi.x;
     float cosTheta = pow(Xi.y, 1.0 / 2.0);
     float sinTheta = sqrt(1.0 - cosTheta * cosTheta);
 
     vec3 dir = vec3(cos(phi) * sinTheta, sin(phi) * sinTheta, cosTheta);
-    vec3 random = dot(abs(n), vec3(0.0, 1.0, 0.0)) < 0.999 ? vec3(0.0, 1.0, 0.0) : vec3(0.0, 0.0, 1.0);
-
-    vec3 t = normalize(cross(random, n));
-    vec3 b = cross(n, t);
-
-    return mat3(t, b, n) * dir;
+    return transformDirToFitToN(n, dir);
 }
 
 float intersectPlane(in const Ray r, in const int index) {
@@ -117,10 +121,11 @@ int getNearest(in const Ray r, out float dist, out bool isSphere) {
 }
 
 void main() {
-    const int nSamples = 1024;
-    int nSample = nSamples;;
-
     outColor = vec3(0.0);
+
+    /* GI */
+    const int nSamples = 128;
+    int nSample = nSamples;;
 
     while(nSample-- != 0) {
         int nDepth = 6;
@@ -177,4 +182,39 @@ void main() {
     }
 
     outColor = pow(outColor, vec3(1 / 2.2));
+
+    /* AO *//*
+    const int nSamples = 16;
+    int nSample = nSamples;
+
+    Ray r;
+    r.o = posCamera;
+    r.d = normalize((inverse(mat) * vec4(clipSpace, 1.0, 1.0)).xyz);
+    float dist;
+    bool isSphere;
+    int i = getNearest(r, dist, isSphere);
+
+    if(i == -1) {
+        outColor = vec3(0.0);
+    }
+
+    vec3 normal;
+    vec3 newPos = r.o + dist * r.d;
+
+    if(isSphere)
+        normal = normalize(newPos - spheres[i].positionRadius.xyz);
+
+    else
+        normal = normalize(planes[i].equation.xyz);
+
+    float ao = 0.0;
+
+    while(nSample-- != 0) {
+        r.d = importanceSamplingDiffuse(random(), normal);
+        r.o = newPos + 0.1 * r.d;
+        getNearest(r, dist, isSphere);
+
+        ao += clamp(1.0 / (nSamples * (1.0 + 0.1 * dist)), 0, 1);
+    }
+    outColor = vec3(1 - ao);*/
 }
