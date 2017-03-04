@@ -67,10 +67,13 @@ int main(int, char **) {
     std::vector<Plane> planes;
     std::vector<Material> materials;
 
+    float radiusLight = 90;
+    float fluxLight = 50000;
+
     materials << make_material(vec3(), vec3(1.0), DIFF);
     materials << make_material(vec3(), vec3(1.0, 0., 0.), DIFF);
     materials << make_material(vec3(), vec3(0., 1.0, 0.), DIFF);
-    materials << make_material(vec3(2), vec3(0., .0, .0), DIFF);
+    materials << make_material(vec3(fluxLight / (4 * 3.1415926535 * radiusLight * radiusLight)), vec3(0., .0, .0), DIFF);
 
     materials << make_material(vec3(), vec3(), SPEC);
     materials << make_material(vec3(), vec3(), REFR);
@@ -83,7 +86,7 @@ int main(int, char **) {
 
     spheres << make_sphere(vec3(150, 100, 376), 100, 4);
     spheres << make_sphere(vec3(350, 100, 100), 100, 5);
-    spheres << make_sphere(vec3(250, 600, 250), 150, 3);
+    spheres << make_sphere(vec3(250, 400, 250), radiusLight, 3);
 
     UnmappableTypedBuffer<Sphere> sphereBuffer(spheres.size(), spheres.data(), GL_STATIC_DRAW);
     UnmappableTypedBuffer<Plane> planeBuffer(planes.size(), planes.data(), GL_STATIC_DRAW);

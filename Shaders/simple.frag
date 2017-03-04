@@ -125,7 +125,7 @@ void main() {
 
     /* GI */
 
-    const int nSamples = 64;
+    const int nSamples = 1024;
     int nSample = nSamples;
 
     while(nSample-- != 0) {
@@ -186,7 +186,7 @@ void main() {
 
     /* AO */
 
-/*    const int nSamples = 16;
+   /* const int nSamples = 1024;
     int nSample = nSamples;
 
     Ray r;
@@ -214,9 +214,8 @@ void main() {
     while(nSample-- != 0) {
         r.d = importanceSamplingDiffuse(random(), normal);
         r.o = newPos + 0.1 * r.d;
-        getNearest(r, dist, isSphere);
-
-        ao += clamp(1.0 / (nSamples * (1.0 + 0.1 * dist)), 0, 1);
+        if(getNearest(r, dist, isSphere) != -1)
+            ao += clamp(1.0 / (nSamples * (1.0 + .01 * dist)), 0, 1);
     }
     outColor = vec3(1 - ao);*/
 }
