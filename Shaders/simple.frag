@@ -52,7 +52,7 @@ layout(binding = 3, std430) restrict readonly buffer _Random {
 vec2 random()
 {
     uint index1 = atomicAdd(Random.current, 2) % Random.nValue;
-    uint index2 = index1 + 1;
+    uint index2 = (index1 + 1) % Random.nValue;
     return vec2(Random.values[index1], Random.values[index2]);
 }
 
@@ -124,8 +124,9 @@ void main() {
     outColor = vec3(0.0);
 
     /* GI */
-    const int nSamples = 128;
-    int nSample = nSamples;;
+
+    const int nSamples = 64;
+    int nSample = nSamples;
 
     while(nSample-- != 0) {
         int nDepth = 6;
@@ -183,8 +184,9 @@ void main() {
 
     outColor = pow(outColor, vec3(1 / 2.2));
 
-    /* AO *//*
-    const int nSamples = 16;
+    /* AO */
+
+/*    const int nSamples = 16;
     int nSample = nSamples;
 
     Ray r;

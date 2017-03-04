@@ -70,7 +70,7 @@ int main(int, char **) {
     materials << make_material(vec3(), vec3(1.0), DIFF);
     materials << make_material(vec3(), vec3(1.0, 0., 0.), DIFF);
     materials << make_material(vec3(), vec3(0., 1.0, 0.), DIFF);
-    materials << make_material(vec3(6), vec3(0., .0, .0), DIFF);
+    materials << make_material(vec3(2), vec3(0., .0, .0), DIFF);
 
     materials << make_material(vec3(), vec3(), SPEC);
     materials << make_material(vec3(), vec3(), REFR);
